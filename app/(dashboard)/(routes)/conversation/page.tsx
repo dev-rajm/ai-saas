@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+// import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 import { Heading } from '@/components/heading';
 import { formSchema } from './constants';
@@ -20,9 +20,14 @@ import { cn } from '@/lib/utils';
 import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 
+interface GeminiMessageParam {
+  role: string;
+  parts: { text: string }[];
+}
+
 const ConversationPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+  const [messages, setMessages] = useState<GeminiMessageParam[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,9 +39,9 @@ const ConversationPage = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionMessageParam = {
+      const userMessage: GeminiMessageParam = {
         role: 'user',
-        content: values.prompt,
+        parts: [{ text: values.prompt }],
       };
 
       const newMessages = [...messages, userMessage];
@@ -45,7 +50,12 @@ const ConversationPage = () => {
         messages: newMessages,
       });
 
-      setMessages(current => [...current, userMessage, response.data]);
+      const botReply: GeminiMessageParam = {
+        role: 'model',
+        parts: [{ text: response.data }],
+      };
+
+      setMessages(current => [...current, userMessage, botReply]);
 
       form.reset();
     } catch (error) {
@@ -118,9 +128,7 @@ const ConversationPage = () => {
               >
                 {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
                 <p className="text-sm">
-                  {typeof message.content === 'string'
-                    ? message.content
-                    : JSON.stringify(message.content)}
+                  {message.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1')}
                 </p>
               </div>
             ))}
