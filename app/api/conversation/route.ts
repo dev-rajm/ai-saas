@@ -1,4 +1,3 @@
-// import OpenAI from 'openai';
 import { GoogleGenAI } from '@google/genai';
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';

@@ -21,7 +21,7 @@ import { BotAvatar } from '@/components/bot-avatar';
 import Markdown from 'react-markdown';
 
 interface GeminiMessageParam {
-  role: string;
+  role: 'user' | 'model';
   parts: { text: string }[];
 }
 
@@ -88,7 +88,7 @@ const ConversationPage = () => {
                   <FormItem className="col-span-12 lg:col-span-10">
                     <FormControl className="m-0 p-0">
                       <Input
-                        className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+                        className="border-0 px-3 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
                         placeholder="How do I calculate the radius of the sun?"
                         {...field}

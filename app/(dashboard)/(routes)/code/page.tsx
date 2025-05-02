@@ -21,7 +21,7 @@ import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 
 interface GeminiMessageParam {
-  role: string;
+  role: 'user' | 'model';
   parts: { text: string }[];
 }
 
@@ -120,7 +120,7 @@ const CodePage = () => {
               <div
                 key={index}
                 className={cn(
-                  'p-8 w-full flex items-start gap-x-8 rounded-lg',
+                  'p-8 w-full flex flex-col items-start gap-x-8 rounded-lg',
                   message.role === 'user'
                     ? 'bg-white border border-black/10'
                     : 'bg-muted'
@@ -129,12 +129,12 @@ const CodePage = () => {
                 {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
                 <Markdown
                   components={{
-                    pre: ({ node, ...props }) => (
+                    pre: ({ ...props }) => (
                       <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
                         <pre {...props} />
                       </div>
                     ),
-                    code: ({ node, ...props }) => (
+                    code: ({ ...props }) => (
                       <code className="bg-black/10 rounded-lg p-1" {...props} />
                     ),
                   }}
